@@ -1,5 +1,4 @@
 import { ContentManager } from "./ContentManager";
-import { EditorManager } from "./EditorManager";
 import WPF from './data/templates/WPF.json';
 import WebComponents from './data/templates/WebComponents.json';
 import Blazor from './data/templates/Blazor.json';
@@ -8,16 +7,14 @@ import Angular from './data/templates/Angular.json';
 
 export class ExportManager {
     private _exportElement: any;
-    private _editorManager: EditorManager;
     private _contentManager: ContentManager;
 
-    public constructor(exportElement: any, editorManager: EditorManager, contentManager: ContentManager) {
+    public constructor(exportElement: any, contentManager: ContentManager) {
         this._exportElement = exportElement;
-        this._exportElement.addEventListener("igcChange", (ev) => {
+        this._exportElement.addEventListener("igcChange", (ev: any) => {
             var item = ev.detail;
             this.onExport(item.textContent!);
         });
-        this._editorManager = editorManager;
         this._contentManager = contentManager;
     }
 

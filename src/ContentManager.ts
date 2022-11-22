@@ -1233,7 +1233,7 @@ export class ContentManager {
         this._frameElement = frameContainer.children[0] as HTMLIFrameElement;
         this._platformElement = platformElement;
 
-        this._platformElement.addEventListener("igcChange", (ev) => {
+        this._platformElement.addEventListener("igcChange", (ev: any) => {
             var item = ev.detail;
             this.onPlatformChanged(item.textContent!);
         });
