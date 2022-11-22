@@ -1,40 +1,8 @@
 import * as libraryJson from './data/library.json';
 import * as validationData from './data/validationData.json';
 
-export class ContentManager {
-    private _frameElement: HTMLIFrameElement;
-    private _platformElement: any;
-    private _frameContainer: HTMLDivElement;
-
-    constructor (frameContainer: HTMLDivElement, platformElement: any) {
-        this._frameContainer = frameContainer;
-        this._frameElement = frameContainer.children[0] as HTMLIFrameElement;
-        this._platformElement = platformElement;
-
-        this._platformElement.addEventListener("igcChange", (ev) => {
-            var item = ev.detail;
-            this.onPlatformChanged(item.textContent!);
-        });
-    }
-
-    private _currentVersion: string | undefined;
-
-    private recreateSurface() {
-        if (this._frameElement) {
-            this.sendDestroyMessage();
-        }
-        this._frameElement.remove();
-        this._frameElement = document.createElement("iframe");
-        this._frameElement.id = "contentFrame";
-        this._frameContainer.append(this._frameElement);
-    }
-
-    private onPlatformChanged(platform: string) {
-        this.recreateSurface();
-        this.loadSurface(undefined, platform);
-    }
-
-    private _shared: string = `
+export class ContentGenerator {
+    private static _shared: string = `
     var platformPrefix = "{{platformPrefix}}";
 
 function toCamel(value) {
@@ -265,7 +233,7 @@ function doExport(platform, code, library, folderTemplate) {
 }
     `;
 
-    private _reactTemplate: string = `
+    private static _reactTemplate: string = `
     <!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -573,7 +541,7 @@ function doExport(platform, code, library, folderTemplate) {
 </html>
     `;
 
-    private _angularTemplate: string = `
+    private static _angularTemplate: string = `
     <!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -927,7 +895,7 @@ function doExport(platform, code, library, folderTemplate) {
 </html>
     `;
 
-    private _wcContentTemplate: string = `
+    private static _wcContentTemplate: string = `
     <!DOCTYPE html>
 
     <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -1210,20 +1178,7 @@ function doExport(platform, code, library, folderTemplate) {
     </html>
     `;
 
-    sendJson(json: string) {
-        this._frameElement.contentWindow?.postMessage(json);
-    }
-
-    sendExportMessage(platform: string, folderTemplate: string) {
-        this._frameElement.contentWindow?.postMessage({ "type": "export", "platform": platform, "folderTemplate": folderTemplate });
-    }
-
-    sendDestroyMessage() {
-        this._frameElement.contentWindow?.postMessage({ "type": "destroy" });
-    }
-
-    loadSurface(specificVersion?: string, platform?: string) {
-        
+    public static generateFor(specificVersion?: string, platform?: string): string {
         if (!platform) {
             platform = "Web Components";
         }
@@ -1236,12 +1191,12 @@ function doExport(platform, code, library, folderTemplate) {
                 specificVersion = "16.16.3";
             }
         }
-        this._currentVersion = specificVersion;
+        
 
         let version = "@" + specificVersion;
         let root = "https://unpkg.com";
 
-        let shared = this._shared.replace(/\{platformPrefix\}/gm, "Igc");
+        let shared = ContentGenerator._shared.replace(/\{platformPrefix\}/gm, "Igc");
 
         let libraryContent = JSON.stringify(libraryJson);
         let validationContent = JSON.stringify(validationData);
@@ -1262,8 +1217,63 @@ function doExport(platform, code, library, folderTemplate) {
         .replace(/\{\{root\}\}/gm, root)
         .replace(/\{\{version\}\}/gm, version)
         .replace(/\{\{library\}\}/gm, libraryContent)
-        .replace(/\{\{validation\}\}/gm, validationContent)
+        .replace(/\{\{validation\}\}/gm, validationContent);
 
+        return content;
+    }
+}
+
+export class ContentManager {
+    private _frameElement: HTMLIFrameElement;
+    private _platformElement: any;
+    private _frameContainer: HTMLDivElement;
+
+    constructor (frameContainer: HTMLDivElement, platformElement: any) {
+        this._frameContainer = frameContainer;
+        this._frameElement = frameContainer.children[0] as HTMLIFrameElement;
+        this._platformElement = platformElement;
+
+        this._platformElement.addEventListener("igcChange", (ev) => {
+            var item = ev.detail;
+            this.onPlatformChanged(item.textContent!);
+        });
+    }
+
+    private _currentVersion: string | undefined;
+
+    private recreateSurface() {
+        if (this._frameElement) {
+            this.sendDestroyMessage();
+        }
+        this._frameElement.remove();
+        this._frameElement = document.createElement("iframe");
+        this._frameElement.id = "contentFrame";
+        this._frameContainer.append(this._frameElement);
+    }
+
+    private onPlatformChanged(platform: string) {
+        this.recreateSurface();
+        this.loadSurface(undefined, platform);
+    }
+
+    
+
+    sendJson(json: string) {
+        this._frameElement.contentWindow?.postMessage(json);
+    }
+
+    sendExportMessage(platform: string, folderTemplate: string) {
+        this._frameElement.contentWindow?.postMessage({ "type": "export", "platform": platform, "folderTemplate": folderTemplate });
+    }
+
+    sendDestroyMessage() {
+        this._frameElement.contentWindow?.postMessage({ "type": "destroy" });
+    }
+
+    loadSurface(specificVersion?: string, platform?: string) {
+        
+        let content = ContentGenerator.generateFor(specificVersion, platform);
+        this._currentVersion = specificVersion;
        
         const frameDoc =
             this._frameElement.contentWindow;
