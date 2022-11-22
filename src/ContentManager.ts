@@ -1224,13 +1224,13 @@ function doExport(platform, code, library, folderTemplate) {
 }
 
 export class ContentManager {
-    private _frameElement: HTMLIFrameElement;
+    private _frameElement: any;
     private _platformElement: any;
-    private _frameContainer: HTMLDivElement;
+    private _frameContainer: any;
 
-    constructor (frameContainer: HTMLDivElement, platformElement: any) {
+    constructor (frameContainer: any, platformElement: any) {
         this._frameContainer = frameContainer;
-        this._frameElement = frameContainer.children[0] as HTMLIFrameElement;
+        this._frameElement = frameContainer.children[0] as any;
         this._platformElement = platformElement;
 
         this._platformElement.addEventListener("igcChange", (ev: any) => {
@@ -1246,9 +1246,11 @@ export class ContentManager {
             this.sendDestroyMessage();
         }
         this._frameElement.remove();
-        this._frameElement = document.createElement("iframe");
-        this._frameElement.id = "contentFrame";
-        this._frameContainer.append(this._frameElement);
+        if ((global as any).document) {
+            this._frameElement = (global as any).document.createElement("iframe");
+            this._frameElement.id = "contentFrame";
+            this._frameContainer.append(this._frameElement);
+        }
     }
 
     private onPlatformChanged(platform: string) {

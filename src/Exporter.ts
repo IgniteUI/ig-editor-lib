@@ -375,10 +375,10 @@ export class Exporter {
             zip.file(this._filePaths[i], this._fileOutputs[i]);
         }
 
-        zip.generateAsync({ type: 'blob' }).then(function (content) {
+        zip.generateAsync({ type: 'blob' }).then(function (content: any) {
             FileSaver.saveAs(content, 'download.zip');
         });
     }
 }
 
-(window as any).Exporter = Exporter;
+(global as any).Exporter = Exporter;
