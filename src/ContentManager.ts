@@ -1,13 +1,12 @@
-import { IgcDropdownComponent } from 'igniteui-webcomponents';
 import * as libraryJson from './data/library.json';
 import * as validationData from './data/validationData.json';
 
 export class ContentManager {
     private _frameElement: HTMLIFrameElement;
-    private _platformElement: IgcDropdownComponent;
+    private _platformElement: any;
     private _frameContainer: HTMLDivElement;
 
-    constructor (frameContainer: HTMLDivElement, platformElement: IgcDropdownComponent) {
+    constructor (frameContainer: HTMLDivElement, platformElement: any) {
         this._frameContainer = frameContainer;
         this._frameElement = frameContainer.children[0] as HTMLIFrameElement;
         this._platformElement = platformElement;

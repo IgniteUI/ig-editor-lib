@@ -1,5 +1,3 @@
-import { IgcDropdownComponent } from "igniteui-webcomponents";
-import { CodeGeneratingComponentRenderer, CodeGenerationRendererOptions, CodeGenerationTargetPlatforms } from "igniteui-webcomponents-core";
 import { ContentManager } from "./ContentManager";
 import { EditorManager } from "./EditorManager";
 import WPF from './data/templates/WPF.json';
@@ -9,11 +7,11 @@ import React from './data/templates/React.json';
 import Angular from './data/templates/Angular.json';
 
 export class ExportManager {
-    private _exportElement: IgcDropdownComponent;
+    private _exportElement: any;
     private _editorManager: EditorManager;
     private _contentManager: ContentManager;
 
-    public constructor(exportElement: IgcDropdownComponent, editorManager: EditorManager, contentManager: ContentManager) {
+    public constructor(exportElement: any, editorManager: EditorManager, contentManager: ContentManager) {
         this._exportElement = exportElement;
         this._exportElement.addEventListener("igcChange", (ev) => {
             var item = ev.detail;
