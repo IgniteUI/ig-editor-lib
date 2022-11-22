@@ -1,4 +1,3 @@
-import { NativeUIElementBridge, NumericColumnDescription } from 'igniteui-webcomponents-core';
 import * as monaco from 'monaco-editor';
 import { strToColor } from 'igniteui-webcomponents-core';
 
