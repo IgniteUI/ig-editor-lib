@@ -482,7 +482,7 @@ function doExport(platform, code, library, folderTemplate) {
                     cr.provideRefValue(editor, "renderer", cr2);
 
                     window.addEventListener("message", listen);
-                    top.postMessage({ type: "ready" });
+                    window.parent.postMessage({ type: "ready" });
                 }
 
                 function bootup() {
@@ -806,7 +806,7 @@ function doExport(platform, code, library, folderTemplate) {
                 console.log("finishing angular boot");
                 cr.provideRefValue(editor, "renderer", cr2);
 
-                top.postMessage({ type: "ready" });
+                window.parent.postMessage({ type: "ready" });
             }
         }
 
@@ -1154,7 +1154,7 @@ function doExport(platform, code, library, folderTemplate) {
     
             function finishBoot() {
                 console.log("finishing boot");
-            top.postMessage({ type: "ready" });
+                window.parent.postMessage({ type: "ready" });
             }
     
             var libraryContent = {{library}};
@@ -1246,8 +1246,8 @@ export class ContentManager {
             this.sendDestroyMessage();
         }
         this._frameElement.remove();
-        if ((global as any).document) {
-            this._frameElement = (global as any).document.createElement("iframe");
+        if ((window as any).document) {
+            this._frameElement = (window as any).document.createElement("iframe");
             this._frameElement.id = "contentFrame";
             this._frameContainer.append(this._frameElement);
         }
