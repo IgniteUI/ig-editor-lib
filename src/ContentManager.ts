@@ -482,7 +482,7 @@ function doExport(platform, code, library, folderTemplate) {
                     cr.provideRefValue(editor, "renderer", cr2);
 
                     window.addEventListener("message", listen);
-                    top.postMessage({ type: "ready" });
+                    window.parent.postMessage({ type: "ready" });
                 }
 
                 function bootup() {
@@ -806,7 +806,7 @@ function doExport(platform, code, library, folderTemplate) {
                 console.log("finishing angular boot");
                 cr.provideRefValue(editor, "renderer", cr2);
 
-                top.postMessage({ type: "ready" });
+                window.parent.postMessage({ type: "ready" });
             }
         }
 
@@ -1154,7 +1154,7 @@ function doExport(platform, code, library, folderTemplate) {
     
             function finishBoot() {
                 console.log("finishing boot");
-            top.postMessage({ type: "ready" });
+                window.parent.postMessage({ type: "ready" });
             }
     
             var libraryContent = {{library}};
