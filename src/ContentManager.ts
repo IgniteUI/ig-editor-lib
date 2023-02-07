@@ -1246,8 +1246,8 @@ export class ContentManager {
             this.sendDestroyMessage();
         }
         this._frameElement.remove();
-        if ((global as any).document) {
-            this._frameElement = (global as any).document.createElement("iframe");
+        if ((window as any).document) {
+            this._frameElement = (window as any).document.createElement("iframe");
             this._frameElement.id = "contentFrame";
             this._frameContainer.append(this._frameElement);
         }
